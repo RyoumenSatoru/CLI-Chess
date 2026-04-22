@@ -12,20 +12,29 @@ public:
     Piece(char Colour, std::pair<int, int> Starting_Position) : Color(Colour), Current_Position(Starting_Position) {}
 
     virtual char Get_Symbol() = 0;
+    
     char Get_Color(){
         return Color;
     }
+
     std::pair<int, int> Get_Position(){
         return Current_Position;
     }
+
     virtual void Display_Symbol(){
         if(Get_Color() == 'W'){
-            std::cout << "\033[32m" << Get_Symbol() << "\033[0m";
+            std::cout << "\033[32m" << Get_Symbol() << "\033[0m ";
         }
         else{
-            std::cout << "\033[31m" << Get_Symbol() << "\033[0m";
+            std::cout << "\033[31m" << Get_Symbol() << "\033[0m ";
         }
     }
+
+    void Set_Position(std::pair<int ,int> New_Position){
+        Current_Position = New_Position;
+    }
+
+    virtual bool Is_Valid_Move(std::pair<int, int> Destination, Piece* Board[8][8]) = 0; 
 };
 
 #endif

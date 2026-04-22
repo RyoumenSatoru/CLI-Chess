@@ -14,8 +14,8 @@ private:
     Piece* Chess_Board[8][8];
 public:
     void Initialize();
-    void Print_Board(bool White_Move);
-    void Move_Piece(std::pair<int, int> Source, std::pair<int, int> Destination);
+    void Print_Board(char Current_Player);
+    bool Move_Piece(std::pair<int, int> Source, std::pair<int, int> Destination, char Current_Player);
 };
 
 #endif

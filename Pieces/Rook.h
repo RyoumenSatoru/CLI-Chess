@@ -10,6 +10,10 @@ public:
     char Get_Symbol() override{
         return 'R';
     }
+
+    bool Is_Valid_Move(std::pair<int, int> Destination, Piece* Board[8][8]) override{
+        return true;
+    }
 };
 
 #endif

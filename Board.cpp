@@ -43,16 +43,16 @@ void Board::Initialize(){
     Chess_Board[7][3] = new Queen('B', {7, 3});
 }
 
-void Board::Print_Board(bool White_Move){
+void Board::Print_Board(char Current_Player){
     for(int i = 0; i < 8; i++){
-        int Row = i;
-        if(!White_Move) Row = 7 - i;
+        int Row = 7 - i;
+        if(Current_Player == 'B') Row = i;
 
         std::cout << Row + 1 << " ";
 
         for(int j = 0; j < 8; j++){
             int Col = j;
-            if(!White_Move) Col = 7 - j;
+            if(Current_Player == 'B') Col = 7 - j;
 
             if(Chess_Board[Row][Col] == nullptr){
                 std::cout << "." << " ";
@@ -65,6 +65,30 @@ void Board::Print_Board(bool White_Move){
         std::cout << std::endl; 
     }
 
-    if(White_Move) std::cout << "   A B C D E F G H" << std::endl; 
-    else std::cout << "   H G F E D C B A" << std::endl;
+    if(Current_Player == 'W') std::cout << "  A B C D E F G H" << std::endl; 
+    else std::cout << "  H G F E D C B A" << std::endl;
+}
+
+bool Board::Move_Piece(std::pair<int, int> Source, std::pair<int, int> Destination, char Current_Player){
+    if(Chess_Board[Source.first][Source.second] == nullptr){
+        return false;
+    }
+
+    if(Chess_Board[Source.first][Source.second]->Get_Color() != Current_Player){
+        return false;
+    }
+
+    if(Chess_Board[Source.first][Source.second]->Is_Valid_Move(Destination, Chess_Board) == false){
+        return false;
+    }
+
+    if(Chess_Board[Destination.first][Destination.second] != nullptr && Chess_Board[Destination.first][Destination.second]->Get_Color() == Current_Player){
+        return false;
+    }
+
+    delete Chess_Board[Destination.first][Destination.second];
+    Chess_Board[Destination.first][Destination.second] = Chess_Board[Source.first][Source.second];
+    Chess_Board[Source.first][Source.second] = nullptr;
+    Chess_Board[Destination.first][Destination.second]->Set_Position(Destination);
+    return true;
 }
