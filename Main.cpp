@@ -31,6 +31,7 @@ int main(){
         bool Success = Grid.Move_Piece(Source, Destination, Current_Player);
 
         if(Success == false){
+            std::cout << "Invalid Move" << std::endl;
             Current_Player = (Current_Player == 'W') ? 'B' : 'W';
         }
     }

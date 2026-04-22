@@ -4,6 +4,7 @@
 #include <iostream>
 #include <utility>
 #include <algorithm>
+#include <cmath>
 
 class Piece{
 protected:
