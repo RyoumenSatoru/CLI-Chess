@@ -23,7 +23,30 @@ int main(){
         else std::cout << "Black's Move: ";
 
         std::string Pos_1, Pos_2;
-        std::cin >> Pos_1 >> Pos_2;
+        std::cin >> Pos_1 ;
+
+        if(Pos_1 == "0-0"){
+            bool Success = Grid.Castling(true, Current_Player);
+            if(Success) continue;
+
+            if(Success == false){
+                std::cout << "Invalid Move" << std::endl;
+                Current_Player = (Current_Player == 'W') ? 'B' : 'W';
+                continue;
+            }
+        }
+        if(Pos_1 == "0-0-0"){
+            bool Success = Grid.Castling(false, Current_Player);
+            if(Success) continue;
+
+            if(Success == false){
+                std::cout << "Invalid Move" << std::endl;
+                Current_Player = (Current_Player == 'W') ? 'B' : 'W';
+                continue;
+            }
+        } 
+
+        std::cin >> Pos_2;
 
         std::pair<int, int> Source = Convert_Input(Pos_1);
         std::pair<int, int> Destination = Convert_Input(Pos_2);

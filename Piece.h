@@ -10,8 +10,9 @@ class Piece{
 protected:
     char Color;
     std::pair<int, int> Current_Position;
+    bool Has_Moved;
 public:
-    Piece(char Colour, std::pair<int, int> Starting_Position) : Color(Colour), Current_Position(Starting_Position) {}
+    Piece(char Colour, std::pair<int, int> Starting_Position) : Color(Colour), Current_Position(Starting_Position), Has_Moved(false) {}
 
     virtual char Get_Symbol() = 0;
     
@@ -36,7 +37,15 @@ public:
         Current_Position = New_Position;
     }
 
-    virtual bool Is_Valid_Move(std::pair<int, int> Destination, Piece* Board[8][8]) = 0; 
+    virtual bool Is_Valid_Move(std::pair<int, int> Destination, Piece* Board[8][8]) = 0;
+
+    bool Get_Has_Moved(){
+        return Has_Moved;
+    }
+
+    void Set_Has_Moved(){
+        Has_Moved = true;
+    }
 };
 
 #endif

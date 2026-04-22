@@ -90,5 +90,48 @@ bool Board::Move_Piece(std::pair<int, int> Source, std::pair<int, int> Destinati
     Chess_Board[Destination.first][Destination.second] = Chess_Board[Source.first][Source.second];
     Chess_Board[Source.first][Source.second] = nullptr;
     Chess_Board[Destination.first][Destination.second]->Set_Position(Destination);
+    Chess_Board[Destination.first][Destination.second]->Set_Has_Moved();
+    return true;
+}
+
+bool Board::Castling(bool Kingside, char Current_Player){
+    int Row = (Current_Player == 'W') ? 0 : 7;
+    int Rook_Col = (Kingside == true) ? 7 : 0;
+
+    int Start_Col = std::min(4, Rook_Col);
+    int End_Col = std::max(4, Rook_Col);
+
+    if(Chess_Board[Row][4] == nullptr || Chess_Board[Row][4]->Get_Has_Moved()){
+        return false;
+    }
+    if(Chess_Board[Row][Rook_Col] == nullptr || Chess_Board[Row][Rook_Col]->Get_Has_Moved()){
+        return false;
+    }
+
+    for(int i = Start_Col + 1; i < End_Col; i++){
+        if(Chess_Board[Row][i] != nullptr){
+            return false;
+        }
+    }
+    
+
+    int King_End_Col = (Kingside == true) ? 6 : 2;
+    int Rook_End_Col = (Kingside == true) ? 5 : 3;
+
+    delete Chess_Board[Row][King_End_Col];
+    delete Chess_Board[Row][Rook_End_Col];
+
+    Chess_Board[Row][King_End_Col] = Chess_Board[Row][4];
+    Chess_Board[Row][Rook_End_Col] = Chess_Board[Row][Rook_Col];
+
+    Chess_Board[Row][4] = nullptr;
+    Chess_Board[Row][Rook_Col] = nullptr;
+
+    Chess_Board[Row][King_End_Col]->Set_Has_Moved();
+    Chess_Board[Row][King_End_Col]->Set_Position({Row, King_End_Col});
+
+    Chess_Board[Row][Rook_End_Col]->Set_Has_Moved();
+    Chess_Board[Row][Rook_End_Col]->Set_Position({Row, Rook_End_Col});
+
     return true;
 }

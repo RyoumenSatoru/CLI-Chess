@@ -16,6 +16,7 @@ public:
     void Initialize();
     void Print_Board(char Current_Player);
     bool Move_Piece(std::pair<int, int> Source, std::pair<int, int> Destination, char Current_Player);
+    bool Castling(bool Kingside, char Current_Player);
 };
 
 #endif
