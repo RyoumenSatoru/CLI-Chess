@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include <utility>
+#include <algorithm>
 
 class Piece{
 protected:
