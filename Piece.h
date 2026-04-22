@@ -20,10 +20,10 @@ public:
     }
     virtual void Display_Symbol(){
         if(Get_Color() == 'W'){
-            std::cout << "\033[32m" << Get_Symbol() << "\033[0m ";
+            std::cout << "\033[32m" << Get_Symbol() << "\033[0m";
         }
         else{
-            std::cout << "\033[31m" << Get_Symbol() << "\033[0m ";
+            std::cout << "\033[31m" << Get_Symbol() << "\033[0m";
         }
     }
 };
