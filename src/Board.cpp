@@ -44,35 +44,44 @@ void Board::Initialize(){
 
     EP_Available = false;
     EP_Square = {-1, -1};
+    White_King = {0, 4};
+    Black_King = {7, 4};
 }
 
-void Board::Print_Board(char Current_Player){
+void Board::Print_Board(bool White_Move){
     for(int i = 0; i < 8; i++){
         int Row = 7 - i;
-        if(Current_Player == 'B') Row = i;
+        if(!White_Move) Row = i;
 
+        std::cout << "  +----+----+----+----+----+----+----+----+" << std::endl;
         std::cout << Row + 1 << " ";
 
         for(int j = 0; j < 8; j++){
             int Col = j;
-            if(Current_Player == 'B') Col = 7 - j;
+            if(!White_Move) Col = 7 - j;
+
+            std::cout << "| ";
 
             if(Chess_Board[Row][Col] == nullptr){
-                std::cout << "." << " ";
+                std::cout << "   ";
             }
             else{
                 Chess_Board[Row][Col]->Display_Symbol();
             }
-            
-        }
-        std::cout << std::endl; 
-    }
 
-    if(Current_Player == 'W') std::cout << "  A B C D E F G H" << std::endl; 
-    else std::cout << "  H G F E D C B A" << std::endl;
+        }
+        std::cout << "|" << std::endl;
+    }
+    std::cout << "  +----+----+----+----+----+----+----+----+" << std::endl;
+
+    if(White_Move) std::cout << "     A    B    C    D    E    F    G    H" << std::endl; 
+    else std::cout << "     H    G    F    E    D    C    B    A" << std::endl;
 }
 
 bool Board::Move_Piece(std::pair<int, int> Source, std::pair<int, int> Destination, char Current_Player){
+    std::pair<int, int> King_Position = (Current_Player == 'W') ? White_King : Black_King;
+    std::pair<int, int> Enemy_King = (Current_Player == 'W') ? Black_King : White_King;
+
     if(Chess_Board[Source.first][Source.second] == nullptr){
         return false;
     }
@@ -89,11 +98,10 @@ bool Board::Move_Piece(std::pair<int, int> Source, std::pair<int, int> Destinati
         return false;
     }
 
-    delete Chess_Board[Destination.first][Destination.second];
+    Piece* Temp_Destination  = Chess_Board[Destination.first][Destination.second];
+
     Chess_Board[Destination.first][Destination.second] = Chess_Board[Source.first][Source.second];
     Chess_Board[Source.first][Source.second] = nullptr;
-    Chess_Board[Destination.first][Destination.second]->Set_Position(Destination);
-    Chess_Board[Destination.first][Destination.second]->Set_Has_Moved();
 
     EP_Available = false;
 
@@ -104,6 +112,16 @@ bool Board::Move_Piece(std::pair<int, int> Source, std::pair<int, int> Destinati
     }
 
     int End_Row = (Current_Player == 'W') ? 7 : 0;
+
+    if(Chess_Board[Destination.first][Destination.second]->Get_Symbol() == 'K') King_Position = Destination;
+
+    if(Is_In_Check(Current_Player, King_Position)){
+        Chess_Board[Source.first][Source.second] = Chess_Board[Destination.first][Destination.second];
+        Chess_Board[Destination.first][Destination.second] = Temp_Destination;
+
+        std::cout << "Invalid — leaves King in check" << std::endl;
+        return false; 
+    }
 
     if(Chess_Board[Destination.first][Destination.second]->Get_Symbol() == 'P' && Destination.first == End_Row){
         char Promoted_Piece;
@@ -120,11 +138,24 @@ bool Board::Move_Piece(std::pair<int, int> Source, std::pair<int, int> Destinati
         }
     }
 
+    if(Chess_Board[Destination.first][Destination.second]->Get_Symbol() == 'K'){
+        if(Chess_Board[Destination.first][Destination.second]->Get_Color() == 'W'){
+            White_King = Destination;
+        }
+        else{
+            Black_King = Destination;
+        }
+    }
     
+    Chess_Board[Destination.first][Destination.second]->Set_Position(Destination);
+    Chess_Board[Destination.first][Destination.second]->Set_Has_Moved();
+    delete Temp_Destination;
     return true;
 }
 
 bool Board::Castling(bool Kingside, char Current_Player){
+    std::pair<int, int> Enemy_King = (Current_Player == 'W') ? Black_King : White_King;
+
     int Row = (Current_Player == 'W') ? 0 : 7;
     int Rook_Col = (Kingside == true) ? 7 : 0;
 
@@ -138,7 +169,12 @@ bool Board::Castling(bool Kingside, char Current_Player){
         return false;
     }
 
-    for(int i = Start_Col + 1; i < End_Col; i++){
+    for(int i = Start_Col; i <= End_Col; i++){
+        if(Is_In_Check(Current_Player, {Row, i})){
+            std::cout << "Invalid — leaves King in check" << std::endl;
+            return false;
+        }
+        if(i == Start_Col || i == End_Col) continue;
         if(Chess_Board[Row][i] != nullptr){
             return false;
         }
@@ -159,6 +195,12 @@ bool Board::Castling(bool Kingside, char Current_Player){
 
     Chess_Board[Row][King_End_Col]->Set_Has_Moved();
     Chess_Board[Row][King_End_Col]->Set_Position({Row, King_End_Col});
+    if(Current_Player == 'W'){
+        White_King = {Row, King_End_Col};
+    }
+    else{
+        Black_King = {Row, King_End_Col};
+    }
 
     Chess_Board[Row][Rook_End_Col]->Set_Has_Moved();
     Chess_Board[Row][Rook_End_Col]->Set_Position({Row, Rook_End_Col});
@@ -167,6 +209,9 @@ bool Board::Castling(bool Kingside, char Current_Player){
 }
 
 bool Board::En_Passant(std::pair<int ,int> Source, char Current_Player){
+    std::pair<int, int> King_Position = (Current_Player == 'W') ? White_King : Black_King;
+    std::pair<int, int> Enemy_King = (Current_Player == 'W') ? Black_King : White_King;
+ 
     if(EP_Available == false){
         return false;
     }
@@ -196,13 +241,39 @@ bool Board::En_Passant(std::pair<int ,int> Source, char Current_Player){
     delete Chess_Board[EP_Square.first][EP_Square.second];
     Chess_Board[EP_Square.first][EP_Square.second] = Chess_Board[Source.first][Source.second];
     Chess_Board[Source.first][Source.second] = nullptr;
-    Chess_Board[EP_Square.first][EP_Square.second]->Set_Position(EP_Square);
 
-    delete Chess_Board[EP_Square.first + Direction][EP_Square.second];
+    Piece* Temp = Chess_Board[EP_Square.first + Direction][EP_Square.second];
+    
     Chess_Board[EP_Square.first + Direction][EP_Square.second] = nullptr;
 
+    if(Is_In_Check(Current_Player, King_Position)){
+        Chess_Board[Source.first][Source.second] = Chess_Board[EP_Square.first][EP_Square.second];
+        Chess_Board[EP_Square.first][EP_Square.second] = nullptr;
+
+        Chess_Board[EP_Square.first + Direction][EP_Square.second] = Temp;
+
+        std::cout << "Invalid — leaves King in check" << std::endl;
+        return false;
+    }
+
+    Chess_Board[EP_Square.first][EP_Square.second]->Set_Position(EP_Square);
     EP_Available = false;
     EP_Square = {-1, -1};
+    delete Temp;
     return true;
 
+}
+
+bool Board::Is_In_Check(char Color, std::pair<int, int> King_Position){
+    for(int i = 0; i < 8; i++){
+        for(int j = 0; j < 8; j++){
+            if(Chess_Board[i][j] != nullptr && Chess_Board[i][j]->Get_Color() != Color){
+                if(Chess_Board[i][j]->Is_Valid_Move(King_Position, Chess_Board)){
+                    return true;
+                }
+            }
+        }
+    }
+
+    return false;
 }

@@ -44,15 +44,17 @@ public:
             }
         }
 
-        int Start_Row = (Dest_Row > Src_Row) ? Src_Row : Dest_Row;
-        int End_Row = (Dest_Row > Src_Row) ? Dest_Row : Src_Row;
-        
-        int Start_Col = (Dest_Col > Src_Col) ? Src_Col : Dest_Col;
-        int End_Col = (Dest_Col > Src_Col) ? Dest_Col : Src_Col;
+        if(Dest_Row != Src_Row && Dest_Col != Src_Col){
+            int row_dir = (Dest_Row > Src_Row) ? 1 : -1;
+            int col_dir = (Dest_Col > Src_Col) ? 1 : -1;
 
-        for(int i = Start_Row + 1, j = Start_Col + 1; i < End_Row && j < End_Col; i++, j++){
-            if(Board[i][j] != nullptr){
-                return false;
+            int r = Src_Row + row_dir;
+            int c = Src_Col + col_dir;
+
+            while(r != Dest_Row && c != Dest_Col){
+                if(Board[r][c] != nullptr) return false;
+                r += row_dir;
+                c += col_dir;
             }
         }
 
