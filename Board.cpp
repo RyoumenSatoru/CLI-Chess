@@ -103,6 +103,23 @@ bool Board::Move_Piece(std::pair<int, int> Source, std::pair<int, int> Destinati
         EP_Square = (Current_Player == 'W') ? std::make_pair(Destination.first - 1, Destination.second) : std::make_pair(Destination.first + 1, Destination.second);
     }
 
+    int End_Row = (Current_Player == 'W') ? 7 : 0;
+
+    if(Chess_Board[Destination.first][Destination.second]->Get_Symbol() == 'P' && Destination.first == End_Row){
+        char Promoted_Piece;
+        std::cout << "Promote To (Q R B N): ";
+        std::cin >> Promoted_Piece;
+
+        delete Chess_Board[Destination.first][Destination.second];
+
+        if(Promoted_Piece == 'R') Chess_Board[Destination.first][Destination.second] = new Rook(Current_Player, Destination);
+        else if(Promoted_Piece == 'N') Chess_Board[Destination.first][Destination.second] = new Knight(Current_Player, Destination);
+        else if(Promoted_Piece == 'B') Chess_Board[Destination.first][Destination.second] = new Bishop(Current_Player, Destination);
+        else{
+            Chess_Board[Destination.first][Destination.second] = new Queen(Current_Player, Destination);
+        }
+    }
+
     
     return true;
 }
