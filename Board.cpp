@@ -41,6 +41,9 @@ void Board::Initialize(){
     //Queens
     Chess_Board[0][3] = new Queen('W', {0, 3});
     Chess_Board[7][3] = new Queen('B', {7, 3});
+
+    EP_Available = false;
+    EP_Square = {-1, -1};
 }
 
 void Board::Print_Board(char Current_Player){
@@ -91,6 +94,16 @@ bool Board::Move_Piece(std::pair<int, int> Source, std::pair<int, int> Destinati
     Chess_Board[Source.first][Source.second] = nullptr;
     Chess_Board[Destination.first][Destination.second]->Set_Position(Destination);
     Chess_Board[Destination.first][Destination.second]->Set_Has_Moved();
+
+    EP_Available = false;
+
+    if(Chess_Board[Destination.first][Destination.second]->Get_Symbol() == 'P' && abs(Source.first - Destination.first) == 2){
+        EP_Available = true;
+
+        EP_Square = (Current_Player == 'W') ? std::make_pair(Destination.first - 1, Destination.second) : std::make_pair(Destination.first + 1, Destination.second);
+    }
+
+    
     return true;
 }
 
@@ -134,4 +147,45 @@ bool Board::Castling(bool Kingside, char Current_Player){
     Chess_Board[Row][Rook_End_Col]->Set_Position({Row, Rook_End_Col});
 
     return true;
+}
+
+bool Board::En_Passant(std::pair<int ,int> Source, char Current_Player){
+    if(EP_Available == false){
+        return false;
+    }
+
+    if(Chess_Board[Source.first][Source.second] == nullptr || Chess_Board[Source.first][Source.second]->Get_Color() != Current_Player){
+        return false;
+    }
+
+    if(Chess_Board[EP_Square.first][EP_Square.second] != nullptr){
+        return false;
+    }
+
+    int Direction = (Current_Player == 'W') ? -1 : 1;
+
+    if(abs(Source.second - EP_Square.second) != 1 || Source.first != EP_Square.first + Direction){
+        return false;
+    }
+
+    if(Chess_Board[EP_Square.first + Direction][EP_Square.second] == nullptr){
+        return false;
+    }
+
+    if(Chess_Board[EP_Square.first + Direction][EP_Square.second]->Get_Color() == Current_Player){
+        return false;
+    }
+
+    delete Chess_Board[EP_Square.first][EP_Square.second];
+    Chess_Board[EP_Square.first][EP_Square.second] = Chess_Board[Source.first][Source.second];
+    Chess_Board[Source.first][Source.second] = nullptr;
+    Chess_Board[EP_Square.first][EP_Square.second]->Set_Position(EP_Square);
+
+    delete Chess_Board[EP_Square.first + Direction][EP_Square.second];
+    Chess_Board[EP_Square.first + Direction][EP_Square.second] = nullptr;
+
+    EP_Available = false;
+    EP_Square = {-1, -1};
+    return true;
+
 }

@@ -27,29 +27,38 @@ int main(){
 
         if(Pos_1 == "0-0"){
             bool Success = Grid.Castling(true, Current_Player);
-            if(Success) continue;
 
             if(Success == false){
                 std::cout << "Invalid Move" << std::endl;
                 Current_Player = (Current_Player == 'W') ? 'B' : 'W';
-                continue;
             }
+            continue;
         }
         if(Pos_1 == "0-0-0"){
             bool Success = Grid.Castling(false, Current_Player);
-            if(Success) continue;
 
             if(Success == false){
                 std::cout << "Invalid Move" << std::endl;
                 Current_Player = (Current_Player == 'W') ? 'B' : 'W';
-                continue;
             }
+            continue;
         } 
 
         std::cin >> Pos_2;
 
         std::pair<int, int> Source = Convert_Input(Pos_1);
         std::pair<int, int> Destination = Convert_Input(Pos_2);
+
+        if(Destination == Grid.Get_EP_Square() && Grid.Get_EP_Available()){
+            bool Success = Grid.En_Passant(Source, Current_Player);
+
+            if(Success == false){
+                std::cout << "Invalid Move" << std::endl;
+                Current_Player = (Current_Player == 'W') ? 'B' : 'W';
+            }
+            continue;
+
+        }
 
         bool Success = Grid.Move_Piece(Source, Destination, Current_Player);
 
