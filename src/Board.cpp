@@ -319,3 +319,45 @@ bool Board::Is_Checkmate(char Current_Player){
 
     return true;
 }
+
+bool Board::Is_Stalemate(char Current_Player){
+    std::pair<int, int> King_Position = (Current_Player == 'W') ? White_King : Black_King;
+
+    if(Is_In_Check(Current_Player, King_Position)){
+        return false;
+    }
+
+    for(int i = 0; i < 8; i++){
+        for(int j = 0; j < 8; j++){
+            if(Chess_Board[i][j] != nullptr && Chess_Board[i][j]->Get_Color() == Current_Player){
+                for(int x = 0; x < 8; x++){
+                    for(int y = 0; y < 8; y++){
+                        Piece* Src = Chess_Board[i][j];
+                        Piece* Dest = Chess_Board[x][y];
+
+                        if(Src->Is_Valid_Move({x, y}, Chess_Board)){
+                            if(Dest == nullptr || Src->Get_Color() != Dest->Get_Color()){
+                                Chess_Board[x][y] = Src;
+                                Chess_Board[i][j] = nullptr;
+
+                                std::pair<int ,int> New_King = King_Position;
+                                if(Src->Get_Symbol() == 'K') New_King = {x, y};
+
+                                bool Still_Check = Is_In_Check(Current_Player, New_King);
+
+                                Chess_Board[i][j] = Src;
+                                Chess_Board[x][y] = Dest;
+
+                                if(!Still_Check){
+                                    return false;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    return true;
+}

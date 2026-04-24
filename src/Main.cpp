@@ -65,6 +65,11 @@ int main(){
                     break;
                 }
 
+                if(Grid.Is_Stalemate((Current_Player == 'W') ? 'B' : 'W')){
+                    std::cout << "Stalemate — Draw!" << std::endl;
+                    break;
+                }
+
                 Current_Player = (Current_Player == 'W') ? 'B' : 'W';
             }
             else{
@@ -83,6 +88,11 @@ int main(){
                     else{
                         std::cout << "\033[31m" << "BLACK WINS" << "\033[0m" << std::endl;
                     }
+                    break;
+                }
+
+                if(Grid.Is_Stalemate((Current_Player == 'W') ? 'B' : 'W')){
+                    std::cout << "Stalemate — Draw!" << std::endl;
                     break;
                 }
 
@@ -113,6 +123,11 @@ int main(){
                     break;
                 }
 
+                if(Grid.Is_Stalemate((Current_Player == 'W') ? 'B' : 'W')){
+                    std::cout << "Stalemate — Draw!" << std::endl;
+                    break;
+                }
+
                 Current_Player = (Current_Player == 'W') ? 'B' : 'W';
             }
             else{
@@ -134,6 +149,12 @@ int main(){
                 }
                 break;
             }
+
+            if(Grid.Is_Stalemate((Current_Player == 'W') ? 'B' : 'W')){
+                std::cout << "Stalemate — Draw!" << std::endl;
+                break;
+            }
+
             Current_Player = (Current_Player == 'W') ? 'B' : 'W';
         }
         else{

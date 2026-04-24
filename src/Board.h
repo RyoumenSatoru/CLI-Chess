@@ -33,6 +33,7 @@ public:
         return (Color == 'W') ? White_King : Black_King;
     }
     bool Is_Checkmate(char Current_Player);
+    bool Is_Stalemate(char Current_Player);
 };
 
 #endif
