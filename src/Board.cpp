@@ -49,18 +49,27 @@ void Board::Initialize(){
 }
 
 void Board::Print_Board(bool White_Move){
+    if(White_Move) std::cout << "    A   B   C   D   E   F   G   H" << std::endl; 
+    else std::cout << "    H   G   F   E   D   C   B   A" << std::endl;
+
     for(int i = 0; i < 8; i++){
         int Row = 7 - i;
         if(!White_Move) Row = i;
 
-        std::cout << "  +----+----+----+----+----+----+----+----+" << std::endl;
+        if(i == 0){
+            std::cout << "  ┏━━━┳━━━┳━━━┳━━━┳━━━┳━━━┳━━━┳━━━┓\n";
+        }
+        else{
+            std::cout << "  ┣━━━╋━━━╋━━━╋━━━╋━━━╋━━━╋━━━╋━━━┫\n";
+        }
+
         std::cout << Row + 1 << " ";
 
         for(int j = 0; j < 8; j++){
             int Col = j;
             if(!White_Move) Col = 7 - j;
 
-            std::cout << "| ";
+            std::cout << "┃";
 
             if(Chess_Board[Row][Col] == nullptr){
                 std::cout << "   ";
@@ -70,17 +79,16 @@ void Board::Print_Board(bool White_Move){
             }
 
         }
-        std::cout << "|" << std::endl;
+        std::cout << "┃ " << Row + 1 << std::endl;
     }
-    std::cout << "  +----+----+----+----+----+----+----+----+" << std::endl;
+    std::cout << "  ┗━━━┻━━━┻━━━┻━━━┻━━━┻━━━┻━━━┻━━━┛" << std::endl;
 
-    if(White_Move) std::cout << "     A    B    C    D    E    F    G    H" << std::endl; 
-    else std::cout << "     H    G    F    E    D    C    B    A" << std::endl;
+    if(White_Move) std::cout << "    A   B   C   D   E   F   G   H" << std::endl; 
+    else std::cout << "    H   G   F   E   D   C   B   A" << std::endl;
 }
 
 bool Board::Move_Piece(std::pair<int, int> Source, std::pair<int, int> Destination, char Current_Player){
     std::pair<int, int> King_Position = (Current_Player == 'W') ? White_King : Black_King;
-    std::pair<int, int> Enemy_King = (Current_Player == 'W') ? Black_King : White_King;
 
     if(Chess_Board[Source.first][Source.second] == nullptr){
         return false;
@@ -154,8 +162,6 @@ bool Board::Move_Piece(std::pair<int, int> Source, std::pair<int, int> Destinati
 }
 
 bool Board::Castling(bool Kingside, char Current_Player){
-    std::pair<int, int> Enemy_King = (Current_Player == 'W') ? Black_King : White_King;
-
     int Row = (Current_Player == 'W') ? 0 : 7;
     int Rook_Col = (Kingside == true) ? 7 : 0;
 
@@ -205,12 +211,14 @@ bool Board::Castling(bool Kingside, char Current_Player){
     Chess_Board[Row][Rook_End_Col]->Set_Has_Moved();
     Chess_Board[Row][Rook_End_Col]->Set_Position({Row, Rook_End_Col});
 
+    EP_Available = false;
+    EP_Square = {-1, -1};
+
     return true;
 }
 
 bool Board::En_Passant(std::pair<int ,int> Source, char Current_Player){
     std::pair<int, int> King_Position = (Current_Player == 'W') ? White_King : Black_King;
-    std::pair<int, int> Enemy_King = (Current_Player == 'W') ? Black_King : White_King;
  
     if(EP_Available == false){
         return false;
