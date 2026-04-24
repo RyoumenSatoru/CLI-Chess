@@ -32,6 +32,7 @@ public:
     std::pair<int, int> Get_King_Position(char Color){
         return (Color == 'W') ? White_King : Black_King;
     }
+    bool Is_Checkmate(char Current_Player);
 };
 
 #endif

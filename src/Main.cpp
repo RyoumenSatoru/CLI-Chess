@@ -38,10 +38,10 @@ int main(){
         Grid.Print_Board(Current_Player == 'W');
         if(Grid.Is_In_Check(Current_Player, Grid.Get_King_Position(Current_Player))){
             if(Current_Player == 'B'){
-                std::cout << "\033[32m " << "Check!" << "\033[0m" << std::endl;
+                std::cout << "\033[32m" << "Check!" << "\033[0m" << std::endl;
             }
             else{
-                std::cout << "\033[31m " << "Check!" << "\033[0m" << std::endl;
+                std::cout << "\033[31m" << "Check!" << "\033[0m" << std::endl;
             }
         }
 
@@ -55,6 +55,16 @@ int main(){
             bool Success = Grid.Castling(true, Current_Player);
 
             if(Success){
+                if(Grid.Is_Checkmate((Current_Player == 'W') ? 'B' : 'W')){
+                    if(Current_Player == 'B'){
+                        std::cout << "\033[32m" << "WHITE WINS!" << "\033[0m" << std::endl;
+                    }
+                    else{
+                        std::cout << "\033[31m" << "BLACK WINS" << "\033[0m" << std::endl;
+                    }
+                    break;
+                }
+
                 Current_Player = (Current_Player == 'W') ? 'B' : 'W';
             }
             else{
@@ -66,6 +76,16 @@ int main(){
             bool Success = Grid.Castling(false, Current_Player);
 
             if(Success){
+                if(Grid.Is_Checkmate((Current_Player == 'W') ? 'B' : 'W')){
+                    if(Current_Player == 'B'){
+                        std::cout << "\033[32m" << "WHITE WINS!" << "\033[0m" << std::endl;
+                    }
+                    else{
+                        std::cout << "\033[31m" << "BLACK WINS" << "\033[0m" << std::endl;
+                    }
+                    break;
+                }
+
                 Current_Player = (Current_Player == 'W') ? 'B' : 'W';
             }
             else{
@@ -83,6 +103,16 @@ int main(){
             bool Success = Grid.En_Passant(Source, Current_Player);
 
             if(Success){
+                if(Grid.Is_Checkmate((Current_Player == 'W') ? 'B' : 'W')){
+                    if(Current_Player == 'B'){
+                        std::cout << "\033[32m" << "WHITE WINS!" << "\033[0m" << std::endl;
+                    }
+                    else{
+                        std::cout << "\033[31m" << "BLACK WINS" << "\033[0m" << std::endl;
+                    }
+                    break;
+                }
+
                 Current_Player = (Current_Player == 'W') ? 'B' : 'W';
             }
             else{
@@ -95,6 +125,15 @@ int main(){
         bool Success = Grid.Move_Piece(Source, Destination, Current_Player);
 
         if(Success){
+            if(Grid.Is_Checkmate((Current_Player == 'W') ? 'B' : 'W')){
+                if(Current_Player == 'B'){
+                    std::cout << "\033[32m" << "WHITE WINS!" << "\033[0m" << std::endl;
+                }
+                else{
+                    std::cout << "\033[31m" << "BLACK WINS" << "\033[0m" << std::endl;
+                }
+                break;
+            }
             Current_Player = (Current_Player == 'W') ? 'B' : 'W';
         }
         else{
