@@ -19,31 +19,30 @@ make
 
 ## Project Structure
 CLI-Chess/
-|-- src/
-    |-- Pieces/
-        |-- Bishop.h
-        |-- King.h
-        |-- Knight.h
-        |-- Pawn.h
-        |-- Queen.h
-        |-- Rook.h
-    |-- utils/
-        |-- Game_Logger.h
-        |-- Utlis.h
-        |-- Utils.cpp
-    |-- Board.h
-    |-- Board.cpp
-    |-- Game.h
-    |-- Game.cpp
-    |-- Main.cpp
-    |-- Piece.h
-    |-- Piece.cpp
-|-- logs/
-    |-- games/
-|-- includes/
-    |-- Constants.h
-Makefile
-Readme.md
+│
+├── src/
+│   ├── Pieces/
+│   │   ├── Bishop.h
+│   │   ├── King.h
+│   │   ├── Knight.h
+│   │   ├── Pawn.h
+│   │   ├── Queen.h
+│   │   ├── Rook.h
+│   │
+│   ├── utils/
+│   │   ├── Utils.h
+│   │   ├── Utils.cpp
+│   │
+│   ├── Board.h
+│   ├── Board.cpp
+│   ├── Game.h
+│   ├── Game.cpp
+│   ├── Main.cpp
+│   ├── Piece.h
+│   ├── Piece.cpp
+│
+├── Makefile
+└── README.md
 
 ## Future Plans
 - Database integration
